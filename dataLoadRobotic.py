@@ -29,7 +29,7 @@ class DataLoader():
         self.maskTraining = []
         # Training Raw images list, rawTraining
         self.rawTraining = []
-        # Testing Masks 
+        # Testing GT 
         self.gtTesting = [] 
         # raw images testing 
         self.rawTesting = []
@@ -42,11 +42,12 @@ class DataLoader():
 
     #convert from uint8 to float and resize 
     def resizeThreshImages(self,inputImage, width = 192, height = 256):
-        #gray = cv2.cvtColor(inputImage, cv2.COLOR_BGR2GRAY)
-        image = resize(inputImage,(width,height))
-        thresh = 0
-        im_bw = cv2.threshold(image, thresh, 1, cv2.THRESH_BINARY)[1]
-        image = np.array(im_bw)
+        gray = cv2.cvtColor(inputImage, cv2.COLOR_BGR2GRAY)
+        image = resize(gray,(width,height,1))
+        #thresh = 0
+        image = np.where(image > 0, 1, 0)
+        #im_bw = cv2.threshold(image, thresh, 1, cv2.THRESH_BINARY)[1]
+        image = np.array(image)
         return image
  
     # return numpy array of rigid segmentation data provided by EncoVis (raws and instrument masks and class masks ) 
@@ -71,6 +72,10 @@ class DataLoader():
                           if ret == False:
                               break
                           image = self.resizeThreshImages(image)
+                          #print(np.unique(image), image.shape)
+                          #image = image.astype(np.float64)
+                          #cv2.imshow('mask', image )
+                          #cv2.waitKey(20)
                           arrayLeftRight1.append(image)                            
                           i+=1
                       cap.release()
@@ -161,7 +166,7 @@ class DataLoader():
                     
           else:
               pass
-              '''
+            
               if 'Dataset1' in root:
                   for file in files:
                       if file == 'Video.avi':
@@ -175,7 +180,7 @@ class DataLoader():
                                   break
                               image = resize(image,(192,256)) 
                               image = np.array(image) 
-                              #cv2.imwrite(os.path.join(pathToRaw, "rawtest2%d.jpg" % i), image)  
+                              #cv2.imwrite(os.path.join( , "rawtest2%d.jpg" % i), image)  
                               self.rawTesting.append(image)
                               i+=1
                           print(i)
@@ -276,12 +281,11 @@ class DataLoader():
                           cap.release()
                           cv2.destroyAllWindows()
               np.savez_compressed('./Data/rawTesting.npy', self.rawTesting)  
-              '''  
+              
         
         #........................ Masks Robotics..................................
 
-      print(np.array(self.gtTesting).shape)        
-      np.savez_compressed('./Data/gtTesting.npy', self.gtTesting)   
+      return self.gtTesting, self.rawTesting  
 
 
     def loadRoboticTrainData(self,path):
@@ -452,18 +456,36 @@ class DataLoader():
 
                         cap.release()
                         cv2.destroyAllWindows()         
-                        np.savez_compressed('./Data/maskTrining.npy',np.array(self.maskTraining))
-                        np.savez_compressed('./Data/rawTrining.npy',np.array(self.rawTraining))
-                        print(np.array(self.rawTraining).shape,np.array(self.maskTraining) )
-                          
+                        #np.savez_compressed('./Data/maskTrining.npy',np.array(self.maskTraining))
+                        #np.savez_compressed('./Data/rawTrining.npy',np.array(self.rawTraining))
+                        #print(np.array(self.rawTraining).shape,np.array(self.maskTraining) )
+        return self.maskTraining, self.rawTraining                         
 
                  
 
 
 load = DataLoader()
 
-# make training data set 
-load.loadRoboticTrainData('./Data/Segmentation_Robotic_Training/Training/')
 
-# mke testing dataset 
-load.loadRoboticTestData('./Data/Robotic Instruments_Testing/')
+#make training data set 
+maskTraining, rawTraining = load.loadRoboticTrainData('./Data/Segmentation_Robotic_Training/Training/')
+print(np.array(maskTraining).shape, np.array(rawTraining).shape )
+
+
+# make Testing data set 
+gtTesting, rawTesting = load.loadRoboticTestData('./Data/Robotic Instruments_Testing/')
+print(np.array(gtTesting).shape, np.array(rawTesting).shape )
+
+
+# save dataset 
+np.savez_compressed('./Data/maskTraining.npy',np.array(maskTraining))
+np.savez_compressed('./Data/rawTraining.npy',np.array(rawTraining))
+
+np.savez_compressed('./Data/gtTesting.npy',np.array(gtTesting))
+np.savez_compressed('./Data/rawTesting.npy',np.array(rawTesting))
+
+
+
+
+# make testing dataset 
+#load.loadRoboticTestData('./Data/Robotic Instruments_Testing/')
