@@ -70,7 +70,7 @@ class CustomConfig(Config):
     IMAGES_PER_GPU = 1
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 9  # Background + other 36 types of tools
+    NUM_CLASSES = 1 + 1  # Background + other 36 types of tools
     # Number of training steps per epoch
     STEPS_PER_EPOCH = 100
 
@@ -235,21 +235,8 @@ class CustomDataset(utils.Dataset):
 
 def train(model):
     """Train the model."""
+
     # Training dataset.
-
-    
-
-    # add online augmentation 
-    augmentation = iaa.SomeOf((0, 3), [
-      iaa.Fliplr(0.5),
-      iaa.Flipud(0.5),
-      iaa.OneOf([iaa.Affine(rotate=90),
-                 iaa.Affine(rotate=180),
-                 iaa.Affine(rotate=270)]),
-      iaa.Multiply((0.8, 1.5)),
-      iaa.GaussianBlur(sigma=(0.0, 5.0))
-  ])
-
     dataset_train = CustomDataset()
     dataset_train.load_custom(args.dataset, "train")
     dataset_train.prepare()
@@ -261,6 +248,23 @@ def train(model):
 
     # add class weights 
     CLASS_WEIGHTS = { 0:189, 1:22, 2:1, 3:40, 4:28, 5:85, 6:40, 7:63, 8:42, 9:5 }
+
+    model_inference = modellib.MaskRCNN(mode="inference", config=CustomConfig(),
+                                model_dir=args.logs)
+     # Custom callback to calculate mAP for each epich during training 
+    mean_average_precision_callback = modellib.MeanAveragePrecisionCallback(model,
+                            model_inference, dataset_val, calculate_map_at_every_X_epoch=5, log=args.logs, verbose=1)
+
+    # add online augmentation 
+    augmentation = iaa.SomeOf((0, 3), [
+      iaa.Fliplr(0.5),
+      iaa.Flipud(0.5),
+      iaa.OneOf([iaa.Affine(rotate=90),
+                 iaa.Affine(rotate=180),
+                 iaa.Affine(rotate=270)]),
+      iaa.Multiply((0.8, 1.5)),
+      iaa.GaussianBlur(sigma=(0.0, 5.0))
+  ])
 
 
     def compute_weights(CLASS_WEIGHTS):
@@ -277,20 +281,23 @@ def train(model):
     # COCO trained weights, we don't need to train too long. Also,
     # no need to train all layers, just the heads should do it.
     print("Training network heads")
-    '''
+    
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=200,
+                epochs=100,
                 layers='heads',
                 augmentation=augmentation,
-                class_weight=class_weights)
+                class_weight=class_weights,
+                custom_callbacks=[mean_average_precision_callback]
+               )
 
+    
     '''
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=200,
+                epochs=100,
                 layers='all')
-
+    '''
 def color_splash(image, mask):
     """Apply color splash effect.
     image: RGB image [height, width, 3]
