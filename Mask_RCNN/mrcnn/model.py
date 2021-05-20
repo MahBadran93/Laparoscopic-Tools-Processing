@@ -1118,6 +1118,8 @@ def mrcnn_class_loss_graph(target_class_ids, pred_class_logits,
         classes that are in the dataset of the image, and 0
         for classes that are not in the dataset.
     """
+    CLASS_WEIGHTS = { 0:229., 1:100., 2:219.}
+    class_w = tf.convert_to_tensor(CLASS_WEIGHTS)
     # During model building, Keras calls this function with
     # target_class_ids of type float32. Unclear why. Cast it
     # to int to get around it.
@@ -1128,7 +1130,7 @@ def mrcnn_class_loss_graph(target_class_ids, pred_class_logits,
     # TODO: Update this line to work with batch > 1. Right now it assumes all
     #       images in a batch have the same active_class_ids
     pred_active = tf.gather(active_class_ids[0], pred_class_ids)
-
+    print('asdasdasdasd', pred_active)
     # Loss
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
         labels=target_class_ids, logits=pred_class_logits)
@@ -1136,6 +1138,7 @@ def mrcnn_class_loss_graph(target_class_ids, pred_class_logits,
     # Erase losses of predictions of classes that are not in the active
     # classes of the image.
     loss = loss * pred_active
+    loss = loss * class_w
 
     # Computer loss mean. Use only predictions that contribute
     # to the loss to get a correct mean.
@@ -1975,9 +1978,12 @@ class MaskRCNN(object):
 
         # Anchors
         if mode == "training":
+            # IMAGE_SHAPE : (IMAGE_MAX_DIM= 1024 , IMAGE_MAX_DIM = 1024, 3)
+            # will get the shape of each feature map in FPN [p2,p3,p4,p5,p6]
             anchors = self.get_anchors(config.IMAGE_SHAPE)
             # Duplicate across the batch dimension because Keras requires it
             # TODO: can this be optimized to avoid duplicating the anchors?
+            # BATCH_SIZE = IMAGES_PER_GPU * self.GPU_COUNT
             anchors = np.broadcast_to(anchors, (config.BATCH_SIZE,) + anchors.shape)
             # A hack to get around Keras's bad support for constants
             # anchors = KL.Lambda(lambda x: tf.Variable(anchors), name="anchors")(input_image)
@@ -2390,9 +2396,9 @@ class MaskRCNN(object):
 
         extra_callbacks = [
             keras.callbacks.CSVLogger('/home/mahmoud/Desktop/Mask_RCNN/logs/training.csv'),
-            keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.1, verbose=1, patience=10, mode='min'), ## new_lr = lr * factor
-            keras.callbacks.EarlyStopping(monitor='val_loss', verbose=1, patience=10, mode='min', restore_best_weights=True),
-            keras.callbacks.TerminateOnNaN()
+            #keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.1, verbose=1, patience=10, mode='min'), ## new_lr = lr * factor
+            #keras.callbacks.EarlyStopping(monitor='val_loss', verbose=1, patience=10, mode='min', restore_best_weights=True),
+            #keras.callbacks.TerminateOnNaN()
         ]
 
         callbacks += extra_callbacks
@@ -2650,6 +2656,7 @@ class MaskRCNN(object):
 
     def get_anchors(self, image_shape):
         """Returns anchor pyramid for the given image size."""
+        # [N, (w, h)] where N is the number of feature maps [p2,p3,p4,p5,p6]
         backbone_shapes = compute_backbone_shapes(self.config, image_shape)
         # Cache anchors and reuse if image shape is the same
         if not hasattr(self, "_anchor_cache"):

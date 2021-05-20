@@ -159,7 +159,7 @@ class Config(object):
 
     # Maximum number of ground truth instances to use in one image
     MAX_GT_INSTANCES = 100
-
+    # refinement : removing unwanted anchors
     # Bounding box refinement standard deviation for RPN and final detections.
     RPN_BBOX_STD_DEV = np.array([0.1, 0.1, 0.2, 0.2])
     BBOX_STD_DEV = np.array([0.1, 0.1, 0.2, 0.2])
@@ -182,7 +182,7 @@ class Config(object):
     LEARNING_MOMENTUM = 0.9
 
     # Weight decay regularization
-    WEIGHT_DECAY = 0.0001
+    WEIGHT_DECAY = 0.001
 
     # Loss weights for more precise optimization.
     # Can be used for R-CNN training setup.
