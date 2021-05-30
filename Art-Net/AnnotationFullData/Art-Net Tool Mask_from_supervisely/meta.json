@@ -1,0 +1,14 @@
+{
+    "classes": [
+        {
+            "title": "Tool",
+            "shape": "polygon",
+            "color": "#AF54B6",
+            "geometry_config": {},
+            "id": 2936601,
+            "hotkey": "T"
+        }
+    ],
+    "tags": [],
+    "projectType": "images"
+}

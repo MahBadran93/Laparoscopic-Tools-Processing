@@ -1,0 +1,70 @@
+{
+    "description": "",
+    "tags": [],
+    "size": {
+        "height": 1080,
+        "width": 1920
+    },
+    "objects": [
+        {
+            "id": 738033060,
+            "classId": 2936601,
+            "description": "",
+            "geometryType": "polygon",
+            "labelerLogin": "MahBadran93",
+            "createdAt": "2021-05-26T11:54:09.838Z",
+            "updatedAt": "2021-05-26T11:54:20.160Z",
+            "tags": [],
+            "classTitle": "Tool",
+            "points": {
+                "exterior": [
+                    [
+                        1328,
+                        54
+                    ],
+                    [
+                        1109,
+                        117
+                    ],
+                    [
+                        960,
+                        154
+                    ],
+                    [
+                        845,
+                        186
+                    ],
+                    [
+                        733,
+                        212
+                    ],
+                    [
+                        731,
+                        249
+                    ],
+                    [
+                        774,
+                        247
+                    ],
+                    [
+                        934,
+                        210
+                    ],
+                    [
+                        1118,
+                        182
+                    ],
+                    [
+                        1315,
+                        132
+                    ],
+                    [
+                        1395,
+                        119
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}
