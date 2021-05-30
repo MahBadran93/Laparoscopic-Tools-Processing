@@ -82,7 +82,7 @@ class CustomConfig(Config):
 
     LEARNING_RATE =  0.001
     BACKBONE = "resnet101" 
-    #WEIGHT_DECAY = 0.01 # 0.005, 0.001
+    WEIGHT_DECAY = 0.01 # 0.005, 0.001
 
 
 ############################################################
@@ -92,7 +92,7 @@ class CustomConfig(Config):
 class CustomDataset(utils.Dataset):
 
     def load_custom(self, dataset_dir, subset):
-        """Load a subset of the bottle dataset.
+        """Load a subset of the Tool dataset.
         dataset_dir: Root directory of the dataset. '/home/mahmoud/Desktop/Mask_RCNN-master/dataset/CHUDataset/'
         subset: Subset to load: train or val
         """
@@ -130,14 +130,13 @@ class CustomDataset(utils.Dataset):
                     imagePath[i] = 'img'
             imagePath[len(imagePath)-1] = imagePath[len(imagePath)-1].replace('.json', '')
             imagePath = '/'.join(imagePath)
-
             # clear the names and instances for each iteration to prevent stacking all the data 
             #polygons["classTitle"].clear()
             #polygons["polygonMaskPoints"].clear() 
             # Read json file 
             annotations = json.load(open(path))
             for obj in annotations['objects']:
-                polygons['classTitle']['tags']['name'].append(obj['classTitle'])
+                polygons['classTitle'].append( obj['tags'][0]['name'])
                 polygons['classID'].append(obj['classId'])
                 polygons['polygonMaskPoints'].append(obj['points'])
 
@@ -285,7 +284,7 @@ def train(model):
                 learning_rate=config.LEARNING_RATE,
                 epochs=100,
                 layers='heads',
-                #augmentation=augmentation,
+                augmentation=augmentation,
                 #class_weight=class_weights,
                 custom_callbacks=[mean_average_precision_callback]
                )
