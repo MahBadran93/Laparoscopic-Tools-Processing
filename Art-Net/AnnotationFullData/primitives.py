@@ -1,6 +1,9 @@
 # convert coordinates frim txt to csv 
 # we need to extract geometric primitives from those lines.
-# the result mask should be of uint8 color type and have three channel [w, h, 3], dtype = uint8
+# the result mask for primitives in the folders should be of uint8 color type and have three channel [w, h, 3], dtype = uint8, with 0 to 255 unique value
+# Tool mask is a binary mask with 0 and 255 values, dtype = uint8 in the folders 
+# for primitives, the input to the model should be fload64 with values range between 0-1 (convert from 0, 255 to float range between 0 and 1)
+# for tool mask, input to the model will be converted to float64 values between 0 -1 
 import pandas as pd
 import numpy as np
 import cv2
