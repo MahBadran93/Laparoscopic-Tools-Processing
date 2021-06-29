@@ -81,8 +81,8 @@ class CustomConfig(Config):
     DETECTION_MIN_CONFIDENCE = 0.9
 
     LEARNING_RATE =  0.001
-    BACKBONE = "resnet101" 
-    WEIGHT_DECAY = 0.01 # 0.005, 0.001
+    BACKBONE = "resnet101" #resnet101, resnet50 
+    #WEIGHT_DECAY = 0.01 # 0.005, 0.001
 
 
 ############################################################
@@ -136,7 +136,11 @@ class CustomDataset(utils.Dataset):
             # Read json file 
             annotations = json.load(open(path))
             for obj in annotations['objects']:
-                polygons['classTitle'].append( obj['tags'][0]['name'])
+                for cou in range(len(obj['tags'])):
+                    toolType = obj['tags'][cou]['name']
+                    if toolType == 'Cylindrical' or toolType == 'NonCylindrical':
+                        toolTag = toolType
+                polygons['classTitle'].append(toolTag)
                 polygons['classID'].append(obj['classId'])
                 polygons['polygonMaskPoints'].append(obj['points'])
 
@@ -261,7 +265,7 @@ def train(model):
                  iaa.Affine(rotate=180),
                  iaa.Affine(rotate=270)]),
       iaa.Multiply((0.8, 1.5)),
-      iaa.GaussianBlur(sigma=(0.0, 5.0))
+      #iaa.GaussianBlur(sigma=(0.0, 5.0))
   ])
 
 
@@ -282,9 +286,9 @@ def train(model):
     
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=100,
+                epochs=200,
                 layers='heads',
-                augmentation=augmentation,
+                #augmentation=augmentation,
                 #class_weight=class_weights,
                 custom_callbacks=[mean_average_precision_callback]
                )
