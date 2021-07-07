@@ -18,7 +18,8 @@
   - To detect surgical tools, we used Mask-RCNN. The base code used is from the repository referenced above.  
   - To run the code: 
     - The dataset is annotated using the [supervisely web platform](https://supervise.ly/)
-    - Load the dataset. [surgAR_Load_Tool_All.py](https://github.com/MahBadran93/laparoscopic-Tools-Segmentation/blob/main/Mask_RCNN/surgAR_Load_Tool_All.py) file will be used to load the data to be suiable input to Mask-RCNN.    
+    - Load the dataset. [surgAR_Load_Tool_All.py](https://github.com/MahBadran93/laparoscopic-Tools-Segmentation/blob/main/Mask_RCNN/surgAR_Load_Tool_All.py) file will be used to load the data to be suiable input to Mask-RCNN. This file will load the dataset with all the classes. 
+    - The dataset should be save in 'train' and 'val' folder with the meta file gereated from supervisely.     
     - Run [Main_Tool](https://github.com/MahBadran93/laparoscopic-Tools-Segmentation/blob/main/Mask_RCNN/Main_Tool.ipynb)    
 
 ## Geometric Primitives extraction 
