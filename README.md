@@ -18,9 +18,9 @@
   - To detect surgical tools, we used Mask-RCNN. The base code used is from the repository referenced above.  
   - To run the code: 
     - The dataset is annotated using the [supervisely web platform](https://supervise.ly/)
-    - Load the dataset. [surgAR_Load_Tool_All.py](https://github.com/MahBadran93/laparoscopic-Tools-Segmentation/blob/main/Mask_RCNN/surgAR_Load_Tool_All.py) file will be used to load the data to be suiable input to Mask-RCNN. This file will load the dataset with all the classes. 
+    - Load the dataset. [surgAR_Load_Tool_All.py](https://github.com/MahBadran93/laparoscopic-Tools-Segmentation/blob/main/Mask_RCNN/surgAR_Load_Tool_All.py) file will be used to load the data to be suiable input to Mask-RCNN. This file will load the dataset with all the classes. Another file [surgAR_load_cylind.py](https://github.com/MahBadran93/laparoscopic-Tools-Segmentation/blob/main/Mask_RCNN/surgAR_load_cylind.py) will be used to load the dataset and resample the surgical tools to cylindrical and non-cylindrical. It is possible to do that since each surgical tool in the image is taged with cylindrical and non-cylindrical.
     - The dataset should be save in 'train' and 'val' folder with the meta file gereated from supervisely.     
-    - Run [Main_Tool](https://github.com/MahBadran93/laparoscopic-Tools-Segmentation/blob/main/Mask_RCNN/Main_Tool.ipynb)    
+    - Run and follow [Main_Tool](https://github.com/MahBadran93/laparoscopic-Tools-Segmentation/blob/main/Mask_RCNN/Main_Tool.ipynb) file to train and test the model.     
 
 ## Geometric Primitives extraction 
 
