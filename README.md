@@ -8,8 +8,15 @@
 ## Requernments:
   - Tensorflow 2.4.1 
   - Ubuntu 18 
+
+## System 
+  - Core i9
+  - Geforce RTX 3080 
+  - 32 gb RAM
   
-## To run the code: 
+## Surgical tool detection 
+
+## Geometric Primitives extraction 
 
   - Run **Main.py** file 
   - The original images and the result can be found in the **data** folder. 
