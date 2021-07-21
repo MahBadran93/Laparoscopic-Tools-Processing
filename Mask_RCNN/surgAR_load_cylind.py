@@ -81,7 +81,7 @@ class CustomConfig(Config):
     DETECTION_MIN_CONFIDENCE = 0.9
 
     LEARNING_RATE =  0.001
-    BACKBONE = "resnet101" #resnet101, resnet50 
+    BACKBONE = "resnet50" #resnet101, resnet50 
     #WEIGHT_DECAY = 0.01 # 0.005, 0.001
 
 
@@ -113,7 +113,7 @@ class CustomDataset(utils.Dataset):
         
         # It includes each image path with its all instances(classes) points and names 
         
-
+        toolTag = ''
         # inintialize image path     
         imagePath = '' 
         # iterate each json file(each image)
@@ -286,11 +286,11 @@ def train(model):
     
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=200,
-                layers='heads',
+                epochs=100,
+                layers='all'
                 #augmentation=augmentation,
                 #class_weight=class_weights,
-                custom_callbacks=[mean_average_precision_callback]
+                #custom_callbacks=[mean_average_precision_callback]
                )
 
     

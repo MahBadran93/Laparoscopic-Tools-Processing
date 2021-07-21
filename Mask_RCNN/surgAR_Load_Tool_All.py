@@ -70,7 +70,7 @@ class CustomConfig(Config):
     IMAGES_PER_GPU = 1
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 1  # Background + other 36 types of tools
+    NUM_CLASSES = 1 + 30  # Background + other classes
     # Number of training steps per epoch
     STEPS_PER_EPOCH = 100
 
@@ -81,8 +81,9 @@ class CustomConfig(Config):
     DETECTION_MIN_CONFIDENCE = 0.9
 
     LEARNING_RATE =  0.001
-
+    BACKBONE = "resnet101" # resnet101, resnet50
     #WEIGHT_DECAY = 0.01 # 0.005, 0.001
+    LEARNING_MOMENTUM = 0.75
 
 
 ############################################################
@@ -253,7 +254,7 @@ def train(model):
                                 model_dir=args.logs)
      # Custom callback to calculate mAP for each epich during training 
     mean_average_precision_callback = modellib.MeanAveragePrecisionCallback(model,
-                            model_inference, dataset_val, calculate_map_at_every_X_epoch=5, log=args.logs, verbose=1)
+                            model_inference, dataset_val, calculate_map_at_every_X_epoch=10, log=args.logs, verbose=1)
 
     # add online augmentation 
     augmentation = iaa.SomeOf((0, 3), [
@@ -284,11 +285,11 @@ def train(model):
     
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=100,
+                epochs=150,
                 layers='heads',
-                augmentation=augmentation,
-                class_weight=class_weights,
-                custom_callbacks=[mean_average_precision_callback]
+                #augmentation=augmentation,
+                #class_weight=class_weights,
+                #custom_callbacks=[mean_average_precision_callback]
                )
 
     
