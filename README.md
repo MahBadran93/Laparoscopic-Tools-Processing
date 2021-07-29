@@ -23,10 +23,6 @@
     - Run and follow [Main_Tool](https://github.com/MahBadran93/laparoscopic-Tools-Segmentation/blob/main/Mask_RCNN/Main_Tool.ipynb) file to train and test the model. This jupyter file also includes, we load ART-Net model to generate geometric primitives. To then, using the object detector, we will be able to generate instance segmentation masks.      
 
 ## Geometric Primitives extraction 
-
-  - Run **Main.py** file 
-  - The original images and the result can be found in the **data** folder. 
-  - If you want to test a new image, you can go to the the end of the code in the **Main.py** file and change the **path1** variable to the new image path.
   
 ## Results: 
 
